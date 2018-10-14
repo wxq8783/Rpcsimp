@@ -8,16 +8,15 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-public class RpcServer
-        implements InitializingBean, DisposableBean, ApplicationContextAware
-{
+@Component
+public class RpcServer implements InitializingBean, DisposableBean, ApplicationContextAware {
     public void destroy() throws Exception {}
 
     public void afterPropertiesSet() throws Exception {
         System.out.println("----------------------afterPropertiesSet");
-        throw new Error("抛出异常");
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

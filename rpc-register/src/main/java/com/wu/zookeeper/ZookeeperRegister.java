@@ -1,30 +1,35 @@
 package com.wu.zookeeper;
-import com.alibaba.fastjson.JSON;
-import com.wu.entity.ZookeeperPathBean;
-import java.io.PrintStream;
+
+import com.wu.entity.RegisterConstant;
+
+import java.util.LinkedList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.api.ACLBackgroundPathAndBytesable;
-import org.apache.curator.framework.api.CreateBuilder;
-import org.apache.curator.framework.api.ExistsBuilder;
-import org.apache.curator.framework.api.ProtectACLCreateModeStatPathAndBytesable;
-import org.apache.curator.framework.listen.ListenerContainer;
-import org.apache.curator.framework.recipes.cache.ChildData;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache;
-import org.apache.curator.framework.recipes.cache.PathChildrenCache.StartMode;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
-import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
-import org.apache.zookeeper.CreateMode;
 
-public class ZookeeperRegister
-        extends CuratorClient
-{
-    public ZookeeperRegister()
-    {
-        try
-        {
-            pathChildrenWathch(this.curatorClient, "/rpc-simp");
+import com.wu.util.CommonConstant;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.cache.PathChildrenCache;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.zookeeper.CreateMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ZookeeperRegister {
+    private static final Logger logger = LoggerFactory.getLogger(ZookeeperRegister.class);
+
+    public CuratorFramework curatorClient;
+    private CountDownLatch downLatch = new CountDownLatch(1);
+    public ZookeeperRegister() {
+        try {
+            this.curatorClient = CuratorFrameworkFactory.builder()
+                    .connectString("47.98.195.145:2181")
+                    .sessionTimeoutMs(RegisterConstant.ZOOKEEPER_SESSION_TIMEOUT.intValue())
+                    .retryPolicy(new ExponentialBackoffRetry(1000, 10)).build();
+            curatorClient.start();
         }
         catch (Exception e)
         {
@@ -33,63 +38,71 @@ public class ZookeeperRegister
         }
     }
 
-    private void pathChildrenWathch(CuratorFramework curatorClient, String watchPath)
-    {
-        try
-        {
+    private void pathChildrenWatch(CuratorFramework curatorClient, String watchPath) {
+        try {
             ExecutorService executorService = Executors.newFixedThreadPool(2);
             PathChildrenCache pathChildrenCache = new PathChildrenCache(curatorClient, watchPath, true);
-            pathChildrenCache.getListenable().addListener(new PathChildrenCacheListener()
-            {
-                public void childEvent(CuratorFramework client, PathChildrenCacheEvent event)
-                        throws Exception
+            pathChildrenCache.getListenable().addListener((client, event) -> {
+                switch (event.getType())
                 {
-//                    switch ()
-//                    {
-//                        case 1:
-//                            System.out.println("CHILD_ADDED��������" + event.getData().getPath() + "��������" + new String(event
-//                                    .getData().getData()) + "��������" + event
-//                                    .getData().getStat());
-//                            break;
-//                        case 2:
-//                            System.out.println("CHILD_UPDATED��������" + event.getData().getPath() + "��������" + new String(event
-//                                    .getData().getData()) + "��������" + event
-//                                    .getData().getStat());
-//                            break;
-//                        case 3:
-//                            System.out.println("CHILD_REMOVED��������" + event.getData().getPath() + "��������" + new String(event
-//                                    .getData().getData()) + "��������" + event
-//                                    .getData().getStat());
-//                            break;
-//                    }
+                    case CHILD_ADDED:
+                        System.out.println("CHILD_ADDED 节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
+                                .getData().getData()) + "  节点状态:" + event.getData().getStat());
+                        break;
+                    case CHILD_UPDATED:
+                        System.out.println("CHILD_UPDATED 节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
+                                .getData().getData()) + "  节点状态:" + event.getData().getStat());
+                        break;
+                    case CHILD_REMOVED:
+                        System.out.println("CHILD_REMOVED 节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
+                                .getData().getData()) + "  节点状态:" + event.getData().getStat());
+                        break;
                 }
             }, executorService);
-
             pathChildrenCache.start(PathChildrenCache.StartMode.BUILD_INITIAL_CACHE);
-
-        }
-        catch (Exception e)
-        {
-
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public boolean createPath(String path, ZookeeperPathBean bean)
-    {
-        try
-        {
-            String fullPath = "/rpc-simp/" + path;
-            if (this.curatorClient.checkExists().forPath(fullPath) == null) {
-                ((ACLBackgroundPathAndBytesable)this.curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL)).forPath(fullPath, JSON.toJSONString(bean).getBytes());
+    public boolean createPath(String path) {
+        try {
+            String fullPath = RegisterConstant.ZOOKEEPER_PATH_ROOT ;
+            if(path.contains(CommonConstant.PATH_JOIN)){
+                String[] arr = path.split("\\"+CommonConstant.PATH_JOIN);
+                for(int i = 0;i<arr.length;i++){
+                    fullPath = fullPath+"/"+arr[i];
+                    if(i < arr.length-1){
+                        createPath(fullPath,true);
+                    }
+                    if(i == (arr.length -1)){
+                        createPath(fullPath,false);
+                    }
+                }
             }
             return true;
-        }
-        catch (Exception e)
-        {
+        }catch (Exception e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void createPath(String path , boolean flag){
+        try {
+            System.out.println("------------------------新增节点的路径"+path);
+            if (this.curatorClient.checkExists().forPath(path) == null) {
+                if(flag){
+                    this.curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, "11".getBytes());
+                    pathChildrenWatch(this.curatorClient, path);
+                }else{
+                    this.curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, "11".getBytes());
+                    System.out.println("++++++"+this.curatorClient.checkExists().forPath(path));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void curatorClose()
