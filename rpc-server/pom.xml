@@ -25,7 +25,11 @@
             <version>1.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.wu.rpc.simp</groupId>
+            <artifactId>rpc-protocol</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
 
     </dependencies>
 </project>

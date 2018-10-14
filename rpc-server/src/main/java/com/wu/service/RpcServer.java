@@ -17,15 +17,19 @@ public class RpcServer implements InitializingBean, DisposableBean, ApplicationC
 
     public void afterPropertiesSet() throws Exception {
         System.out.println("----------------------afterPropertiesSet");
+
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         System.out.println("========================setApplicationContext");
         Map<String, Object> map = applicationContext.getBeansWithAnnotation(RPCService.class);
-        if (!CollectionUtils.isEmpty(map))
-        {
+        if (!CollectionUtils.isEmpty(map)) {
             RpcRegisterService rpcRegisterService = (RpcRegisterService)applicationContext.getBean("rpcRegisterService");
             rpcRegisterService.doRegister(map);
         }
+    }
+    //netty启动
+    public void nettyStart(){
+
     }
 }

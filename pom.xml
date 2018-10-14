@@ -23,6 +23,7 @@
         <module>rpc-register</module>
         <module>rpc-server</module>
         <module>rcp-sample</module>
+        <module>rpc-protocol</module>
     </modules>
 
     <properties>

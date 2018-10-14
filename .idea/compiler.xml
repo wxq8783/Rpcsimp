@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="rpc-api" />
         <module name="rpc-common" />
+        <module name="rpc-protocol" />
         <module name="rpc-register" />
         <module name="rpc-server" />
         <module name="rpc-web-produce" />
