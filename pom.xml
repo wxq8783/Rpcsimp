@@ -24,6 +24,7 @@
         <module>rpc-server</module>
         <module>rcp-sample</module>
         <module>rpc-protocol</module>
+        <module>rpc-client</module>
     </modules>
 
     <properties>

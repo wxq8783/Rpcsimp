@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,9 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class RpcServer implements InitializingBean, DisposableBean, ApplicationContextAware {
     public void destroy() throws Exception {}
+
+    @Autowired
+    NettyServerService nettyServerService;
 
     public void afterPropertiesSet() throws Exception {
         System.out.println("----------------------afterPropertiesSet");
@@ -30,6 +34,6 @@ public class RpcServer implements InitializingBean, DisposableBean, ApplicationC
     }
     //netty启动
     public void nettyStart(){
-
+        nettyServerService.start();
     }
 }
