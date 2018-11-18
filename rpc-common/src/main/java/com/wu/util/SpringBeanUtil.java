@@ -1,6 +1,9 @@
 package com.wu.util;
 
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+
+import java.util.Map;
 
 public class SpringBeanUtil {
 
@@ -19,6 +22,10 @@ public class SpringBeanUtil {
         return INSTANCE;
     }
 
+    public ApplicationContext getContext(){
+        return context;
+    }
+
     public void setContext(ConfigurableApplicationContext context)
     {
         this.context = context;
@@ -32,5 +39,9 @@ public class SpringBeanUtil {
     public void registerBean(String beanName, Object object)
     {
         this.context.getBeanFactory().registerSingleton(beanName, object);
+    }
+
+    public Map<String, Object> getAnnotationBean(Class clazz){
+        return this.context.getBeansWithAnnotation(clazz);
     }
 }

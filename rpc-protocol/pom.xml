@@ -11,10 +11,5 @@
 
     <artifactId>rpc-protocol</artifactId>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.msgpack</groupId>
-            <artifactId></artifactId>
-        </dependency>
-    </dependencies>
+
 </project>

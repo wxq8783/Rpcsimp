@@ -26,14 +26,14 @@ public class NettyServerService {
     /**
      * 启动netty
      */
-    public void start(){
+    public void start(int port){
         try {
             bossGroup = new NioEventLoopGroup();
             workGroup = new NioEventLoopGroup();
             ServerBootstrap b = new ServerBootstrap();
             groupsNio(b);
             // 绑定端口，同步等待成功
-            ChannelFuture f = b.bind(8989).sync();
+            ChannelFuture f = b.bind(port).sync();
             // 等待服务端监听端口关闭
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {

@@ -6,7 +6,6 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.esotericsoftware.kryo.pool.KryoPool;
 import com.google.common.io.Closer;
-import com.wu.coder.MessageCoderService;
 import io.netty.buffer.ByteBuf;
 
 import java.io.ByteArrayInputStream;

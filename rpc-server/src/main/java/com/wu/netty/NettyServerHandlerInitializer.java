@@ -14,7 +14,7 @@ public class NettyServerHandlerInitializer extends ChannelInitializer<SocketChan
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast(new LengthFieldBasedFrameDecoder(65536,0,4,0,0));
+        //pipeline.addLast(new LengthFieldBasedFrameDecoder(65536,0,4,0,0));
         pipeline.addLast("encoder",new MessageEncoderHanlder());
         pipeline.addLast("decoder",new MessageDecoderHandler());
         pipeline.addLast("rpcHandler",new RpcServerHandler());
