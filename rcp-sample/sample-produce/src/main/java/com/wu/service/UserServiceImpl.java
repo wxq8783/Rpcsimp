@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
     @Override
     public String getUserInfoById(Long id) {
-        return "wuxq";
+        return "wuxq"+id;
     }
 }

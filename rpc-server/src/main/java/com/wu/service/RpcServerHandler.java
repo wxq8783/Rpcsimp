@@ -3,10 +3,10 @@ package com.wu.service;
 import com.wu.RequestBean;
 import com.wu.ResponseBean;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.commons.beanutils.MethodUtils;
 
-public class RpcServerHandler extends ChannelInboundHandlerAdapter {
+public class RpcServerHandler extends SimpleChannelInboundHandler<RequestBean> {
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
@@ -33,9 +33,7 @@ public class RpcServerHandler extends ChannelInboundHandlerAdapter {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        System.out.println("----------------netty read");
-        RequestBean requestBean = (RequestBean) msg;
+    protected void channelRead0(ChannelHandlerContext ctx, RequestBean requestBean) throws Exception {
         ResponseBean responseBean = new ResponseBean();
         if(requestBean == null){
             responseBean.setErrorMsg("请求过来的requestBean为空");

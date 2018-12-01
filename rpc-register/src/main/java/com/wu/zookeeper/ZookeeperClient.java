@@ -3,6 +3,7 @@ package com.wu.zookeeper;
 import com.wu.entity.RegisterConstant;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,12 +19,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ZookeeperRegister {
-    private static final Logger logger = LoggerFactory.getLogger(ZookeeperRegister.class);
+public class ZookeeperClient {
+    private static final Logger logger = LoggerFactory.getLogger(ZookeeperClient.class);
 
     public CuratorFramework curatorClient;
     private CountDownLatch downLatch = new CountDownLatch(1);
-    public ZookeeperRegister() {
+    public ZookeeperClient() {
         try {
             this.curatorClient = CuratorFrameworkFactory.builder()
                     .connectString("47.98.195.145:2181")
@@ -33,7 +34,6 @@ public class ZookeeperRegister {
         }
         catch (Exception e)
         {
-            System.out.println("1111");
             e.printStackTrace();
         }
     }
@@ -104,6 +104,22 @@ public class ZookeeperRegister {
         }
 
     }
+
+
+
+    public String getPathDetail(String interfaceName){
+        try {
+            List<String> list = curatorClient.getChildren().forPath(RegisterConstant.ZOOKEEPER_PATH_ROOT + "/" + interfaceName);
+            for(String path : list){
+                System.out.println("---------------"+path);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
 
     public void curatorClose()
     {

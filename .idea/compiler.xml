@@ -13,6 +13,7 @@
         <module name="rpc-register" />
         <module name="rpc-server" />
         <module name="rpc-web-produce" />
+        <module name="sample-consumer" />
         <module name="sample-produce" />
       </profile>
     </annotationProcessing>
