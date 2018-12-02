@@ -24,6 +24,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.wu.rpc.simp</groupId>
             <artifactId>rpc-server</artifactId>
             <version>1.0-SNAPSHOT</version>

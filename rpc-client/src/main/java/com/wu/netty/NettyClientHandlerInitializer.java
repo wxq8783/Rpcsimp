@@ -9,11 +9,10 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 public class NettyClientHandlerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
-    protected void initChannel(SocketChannel ch) throws Exception {
-        ChannelPipeline pipeline = ch.pipeline();
-        pipeline.addLast("coder",new LengthFieldBasedFrameDecoder(65535,0,4,0,0));
+    protected void initChannel(SocketChannel socketChannel) throws Exception {
+        ChannelPipeline pipeline = socketChannel.pipeline();
         pipeline.addLast("encoder",new MessageEncoderHanlder());
         pipeline.addLast("decoder",new MessageDecoderHandler());
-        pipeline.addLast("handler",new RpcClientHandler());
+        pipeline.addLast("rpcHandler",new RpcClientHandler());
     }
 }

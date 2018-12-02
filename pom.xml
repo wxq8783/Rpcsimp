@@ -33,14 +33,11 @@
         <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
 
         <java.version>1.8</java.version>
-        <spring.version>4.3.9.RELEASE</spring.version>
-        <spring-cloud.version>Dalston.SR1</spring-cloud.version>
-        <dubbo.version>2.5.3</dubbo.version>
-        <mongo.driver.version>3.5.0</mongo.driver.version>
+        <spring.version>5.1.1.RELEASE</spring.version>
+
         <mysql-connector-java>5.1.40</mysql-connector-java>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <guava.version>21.0</guava.version>
-        <spring.data.mongodb.version>1.9.1.RELEASE</spring.data.mongodb.version>
         <hessian.version>4.0.38</hessian.version>
         <protostuff.version>1.0.8</protostuff.version>
         <kryo.version>4.0.0</kryo.version>
@@ -48,12 +45,8 @@
         <netty.version>4.1.16.Final</netty.version>
         <commons.httpclient.version>3.0.1</commons.httpclient.version>
         <httpclient.version>4.5.1</httpclient.version>
-        <okhttp.version>3.7.0</okhttp.version>
-        <gson.verions>2.6.2</gson.verions>
         <druid.version>1.0.29</druid.version>
-        <springfox.version>2.6.1</springfox.version>
         <lombok.version>1.16.14</lombok.version>
-        <motan.version>1.0.0</motan.version>
         <disruptor.version>3.4.0</disruptor.version>
     </properties>
 
@@ -83,26 +76,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp</artifactId>
-            <version>${okhttp.version}</version>
-        </dependency>
-
-
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
         </dependency>
-
-
-
-
-
-
-
-
 
         <!-- Spring Dependency Begin -->
         <dependency>
@@ -147,11 +124,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-instrument-tomcat</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
         </dependency>
@@ -191,20 +163,9 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc-portlet</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
 
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-dependencies</artifactId>
-            <version>${spring-cloud.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
+
 
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -300,28 +261,6 @@
             <version>4.0.1</version>
         </dependency>
 
-        <!--
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-bean-validators</artifactId>
-            <version>${springfox.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        -->
     </dependencies>
 
 
@@ -330,7 +269,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>

@@ -1,6 +1,8 @@
 package com.wu.proxy;
 
 import com.wu.RequestBean;
+import com.wu.netty.NettyChannelManager;
+import io.netty.channel.Channel;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -24,6 +26,11 @@ public class RpcInvocation<T> implements InvocationHandler {
         requestBean.setMethodName(methodName);
         requestBean.setParameters(args);
         requestBean.setParametersType(parameterType);
-        return null;
+        NettyChannelManager channelManager = NettyChannelManager.getInstance();
+        Channel channel = channelManager.getChannel(className);
+        if(channel != null){
+            channel.writeAndFlush(requestBean);
+        }
+        return channel.read();
     }
 }

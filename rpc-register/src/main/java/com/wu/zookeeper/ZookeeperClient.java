@@ -17,6 +17,7 @@ import org.apache.zookeeper.CreateMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 @Component
 public class ZookeeperClient {
@@ -110,8 +111,8 @@ public class ZookeeperClient {
     public String getPathDetail(String interfaceName){
         try {
             List<String> list = curatorClient.getChildren().forPath(RegisterConstant.ZOOKEEPER_PATH_ROOT + "/" + interfaceName);
-            for(String path : list){
-                System.out.println("---------------"+path);
+            if(!CollectionUtils.isEmpty(list)){
+                return list.get(0);
             }
         } catch (Exception e) {
             e.printStackTrace();
