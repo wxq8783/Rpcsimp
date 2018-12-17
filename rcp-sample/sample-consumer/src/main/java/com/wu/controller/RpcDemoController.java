@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/rpc")
 public class RpcDemoController {
 
-    @RCPReference
-    UserService userService;
 
     @Autowired
     RpcUserService rpcUserService;

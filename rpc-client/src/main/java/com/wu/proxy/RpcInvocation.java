@@ -1,36 +1,36 @@
 package com.wu.proxy;
 
+import com.google.common.reflect.AbstractInvocationHandler;
 import com.wu.RequestBean;
 import com.wu.netty.NettyChannelManager;
+import com.wu.netty.NettyClient;
 import io.netty.channel.Channel;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.concurrent.CompletableFuture;
 
-public class RpcInvocation<T> implements InvocationHandler {
+public class RpcInvocation<T> extends AbstractInvocationHandler {
 
     private Class<T> interfaceClass;
 
-    public RpcInvocation(Class<T> interfaceClass) {
+    public RpcInvocation(Class<T> interfaceClass ) {
         this.interfaceClass = interfaceClass;
     }
 
+
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    protected Object handleInvocation(Object proxy, Method method, Object[] objects) throws Throwable {
         String className = method.getDeclaringClass().getName();
         String methodName = method.getName();
         Class<?>[] parameterType = method.getParameterTypes();
-
         RequestBean requestBean = new RequestBean();
         requestBean.setClassName(className);
         requestBean.setMethodName(methodName);
-        requestBean.setParameters(args);
+        requestBean.setParameters(objects);
         requestBean.setParametersType(parameterType);
-        NettyChannelManager channelManager = NettyChannelManager.getInstance();
-        Channel channel = channelManager.getChannel(className);
-        if(channel != null){
-            channel.writeAndFlush(requestBean);
-        }
-        return channel.read();
+        NettyClient nettyClient = null;
+        CompletableFuture future = nettyClient.sendRequest(requestBean);
+        return future.get();
     }
 }

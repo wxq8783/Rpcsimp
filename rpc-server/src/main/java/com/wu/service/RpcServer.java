@@ -23,7 +23,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 @Component
-public class RpcServer implements BeanPostProcessor, DisposableBean, ApplicationContextAware ,ApplicationListener<WebServerInitializedEvent> {
+public class RpcServer implements DisposableBean, ApplicationContextAware ,ApplicationListener<WebServerInitializedEvent> {
     public void destroy() throws Exception {}
 
     private static int port ;
@@ -69,22 +69,5 @@ public class RpcServer implements BeanPostProcessor, DisposableBean, Application
         nettyServerService.start(port);
     }
 
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
 
-    @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        Field[] fields = bean.getClass().getDeclaredFields();
-        if(fields != null){
-            for(Field field : fields){
-                RCPReference reference = field.getAnnotation(RCPReference.class);
-                if(reference != null){
-                    rpcClient.initNettyClient(field.getType().getName());
-                }
-            }
-        }
-        return bean;
-    }
 }
