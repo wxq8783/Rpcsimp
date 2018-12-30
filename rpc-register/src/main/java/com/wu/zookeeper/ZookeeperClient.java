@@ -47,15 +47,15 @@ public class ZookeeperClient {
                 switch (event.getType())
                 {
                     case CHILD_ADDED:
-                        System.out.println("CHILD_ADDED 节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
+                        System.out.println("新增节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
                                 .getData().getData()) + "  节点状态:" + event.getData().getStat());
                         break;
                     case CHILD_UPDATED:
-                        System.out.println("CHILD_UPDATED 节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
+                        System.out.println("修改节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
                                 .getData().getData()) + "  节点状态:" + event.getData().getStat());
                         break;
                     case CHILD_REMOVED:
-                        System.out.println("CHILD_REMOVED 节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
+                        System.out.println("移除节点路径:" + event.getData().getPath() + " 节点内容:" + new String(event
                                 .getData().getData()) + "  节点状态:" + event.getData().getStat());
                         break;
                 }
@@ -90,14 +90,12 @@ public class ZookeeperClient {
 
     public void createPath(String path , boolean flag){
         try {
-            System.out.println("------------------------新增节点的路径"+path);
             if (this.curatorClient.checkExists().forPath(path) == null) {
                 if(flag){
                     this.curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT).forPath(path, "11".getBytes());
                     pathChildrenWatch(this.curatorClient, path);
                 }else{
                     this.curatorClient.create().creatingParentsIfNeeded().withMode(CreateMode.EPHEMERAL).forPath(path, "11".getBytes());
-                    System.out.println("++++++"+this.curatorClient.checkExists().forPath(path));
                 }
             }
         } catch (Exception e) {
@@ -108,17 +106,15 @@ public class ZookeeperClient {
 
 
 
-    public String getPathDetail(String interfaceName){
+    public List<String> getPathDetail(String interfaceName){
         try {
             List<String> list = curatorClient.getChildren().forPath(RegisterConstant.ZOOKEEPER_PATH_ROOT + "/" + interfaceName);
-            if(!CollectionUtils.isEmpty(list)){
-                return list.get(0);
-            }
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return "";
+        return null;
     }
 
 

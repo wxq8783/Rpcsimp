@@ -2,11 +2,7 @@ package com.wu.proxy;
 
 import com.google.common.reflect.AbstractInvocationHandler;
 import com.wu.RequestBean;
-import com.wu.netty.NettyChannelManager;
 import com.wu.netty.NettyClient;
-import io.netty.channel.Channel;
-
-import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.concurrent.CompletableFuture;
 
@@ -29,7 +25,7 @@ public class RpcInvocation<T> extends AbstractInvocationHandler {
         requestBean.setMethodName(methodName);
         requestBean.setParameters(objects);
         requestBean.setParametersType(parameterType);
-        NettyClient nettyClient = null;
+        NettyClient nettyClient = new NettyClient(className);
         CompletableFuture future = nettyClient.sendRequest(requestBean);
         return future.get();
     }

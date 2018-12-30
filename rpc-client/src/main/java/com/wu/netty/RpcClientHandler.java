@@ -53,6 +53,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<ResponseBean> 
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         //logger.error("client caught exception", cause);
         SocketAddress address = ctx.channel().remoteAddress();
+
         NettyChannelManager.getInstance().removeChannel(address.toString());
         ctx.close();
     }

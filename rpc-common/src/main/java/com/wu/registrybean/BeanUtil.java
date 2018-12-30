@@ -86,4 +86,6 @@ public class BeanUtil implements BeanDefinitionRegistryPostProcessor {
         getRegistry().registerBeanDefinition(beanId,definition);
         return true;
     }
+
+
 }

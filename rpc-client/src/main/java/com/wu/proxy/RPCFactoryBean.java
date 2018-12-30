@@ -8,7 +8,7 @@ public class RPCFactoryBean<T> implements FactoryBean {
 
     private Class<T> referenceClass;
 
-    public RPCFactoryBean(Class<T> referenceClass){
+    public void setReferenceClass(Class<T> referenceClass) {
         this.referenceClass = referenceClass;
     }
 
@@ -19,7 +19,6 @@ public class RPCFactoryBean<T> implements FactoryBean {
      */
     @Override
     public Object getObject() throws Exception {
-
         return Proxy.newProxyInstance(referenceClass.getClassLoader(),new Class[]{referenceClass},new RpcInvocation<T>(referenceClass));
     }
 

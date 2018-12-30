@@ -5,11 +5,11 @@ import com.wu.proxy.RPCFactoryBean;
 import com.wu.registrybean.BeanUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ApplicationEvent;
-import org.springframework.context.ApplicationListener;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+import org.springframework.context.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 @Component
-public class RpcClientService implements DisposableBean, ApplicationListener ,BeanPostProcessor{
+public class RpcClientService implements DisposableBean, ApplicationContextAware ,BeanPostProcessor {
 
     private Set<Field> referenceFieldSet = new HashSet<>();
 
@@ -30,6 +30,7 @@ public class RpcClientService implements DisposableBean, ApplicationListener ,Be
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         Field[] fields = bean.getClass().getDeclaredFields();
         if(fields != null){
             for(Field field : fields){
@@ -47,8 +48,9 @@ public class RpcClientService implements DisposableBean, ApplicationListener ,Be
 
     }
 
+
     @Override
-    public void onApplicationEvent(ApplicationEvent applicationEvent) {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         System.out.println("-------------------");
         if(!CollectionUtils.isEmpty(referenceFieldSet)){
             Iterator<Field> iterator = referenceFieldSet.iterator();
@@ -59,10 +61,17 @@ public class RpcClientService implements DisposableBean, ApplicationListener ,Be
                     continue;
                 }
                 Class<?> classType = field.getType();
-                FactoryBean<?> factoryBean = new RPCFactoryBean<>(classType);
-                BeanUtil.registryBeanWithEdit(serviceName,factoryBean.getClass(),classType);
+                //FactoryBean<?> factoryBean = new RPCFactoryBean<>(classType);
+                registryBeanFactory(applicationContext,classType);
             }
         }
+    }
 
+    public  void registryBeanFactory(ApplicationContext applicationContext , Class<?> clazz){
+        ConfigurableApplicationContext configurableApplicationContext = (ConfigurableApplicationContext) applicationContext;
+        GenericBeanDefinition definition=(GenericBeanDefinition) BeanDefinitionBuilder.genericBeanDefinition(clazz).getBeanDefinition();
+        definition.getPropertyValues().addPropertyValue("referenceClass",clazz);
+        definition.setBeanClass(RPCFactoryBean.class);
+        ((BeanDefinitionRegistry) configurableApplicationContext.getBeanFactory()).registerBeanDefinition(clazz.getName(),definition);
     }
 }

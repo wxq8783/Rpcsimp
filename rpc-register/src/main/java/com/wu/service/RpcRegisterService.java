@@ -1,6 +1,8 @@
 package com.wu.service;
 
+
 import com.wu.annotation.RPCService;
+import com.wu.registrybean.RegistryAddress;
 import com.wu.util.CommonConstant;
 import com.wu.zookeeper.ZookeeperClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 @Service("rpcRegisterService")
@@ -32,7 +35,19 @@ public class RpcRegisterService {
     }
 
 
-    public void discover(String interfaceName){
 
+    public RegistryAddress doDiscover(String interfaceName){
+        List<String> addressList =  zookeeperClient.getPathDetail(interfaceName);
+        if(CollectionUtils.isEmpty(addressList)){
+            return null;
+        }
+        for(String allAddress : addressList){
+            RegistryAddress registryAddress= new RegistryAddress();
+            String[] addressArr = allAddress.split("\\:");
+            registryAddress.setHost(addressArr[0]);
+            registryAddress.setPort(Integer.valueOf(addressArr[1]));
+            return registryAddress;
+        }
+        return null;
     }
 }

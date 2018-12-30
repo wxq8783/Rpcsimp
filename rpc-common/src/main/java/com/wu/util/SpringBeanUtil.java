@@ -33,7 +33,11 @@ public class SpringBeanUtil {
 
     public <T> T getBean(Class<T> type)
     {
-        return (T)INSTANCE.getBean(type);
+        return (T)INSTANCE.getContext().getBean(type);
+    }
+
+    public <T> T getBean(String name){
+        return  (T)INSTANCE.getContext().getBean(name);
     }
 
     public void registerBean(String beanName, Object object)
