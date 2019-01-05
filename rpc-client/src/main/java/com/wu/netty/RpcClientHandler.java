@@ -42,10 +42,10 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<ResponseBean> 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, ResponseBean responseBean) throws Exception {
         String requestId = responseBean.getRequestId();
-        CompletableFuture future = nettyClient.requestRPCMap.get(requestId);
-        if(future != null && future.isDone()){
+        CompletableFuture comFuture = nettyClient.requestRPCMap.get(requestId);
+        if(comFuture != null ){
             nettyClient.requestRPCMap.clear();
-            future.complete(responseBean);
+            comFuture.complete(responseBean);
         }
     }
 

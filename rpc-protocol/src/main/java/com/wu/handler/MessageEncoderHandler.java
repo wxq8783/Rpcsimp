@@ -1,17 +1,18 @@
 package com.wu.handler;
 
-import com.wu.coder.kryo.KryoCoderService;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class MessageEncoderHanlder extends MessageToByteEncoder<Object> {
-    @Autowired
-    KryoCoderService kryoCoderService;
+@Component
+public class MessageEncoderHandler extends MessageToByteEncoder<Object> {
+//    @Autowired
+//    KryoCoderService kryoCoderService;
     @Override
     protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
         System.out.println("---------------编码");
-        kryoCoderService.encoder(out,msg);
+//        KryoCoderService kryoCoderService = new KryoCoderService();
+//        kryoCoderService.encoder(out,msg);
     }
 }

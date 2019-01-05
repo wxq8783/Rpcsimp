@@ -1,10 +1,8 @@
 package com.wu.service;
 
 
-import com.wu.annotation.RCPReference;
 import com.wu.annotation.RPCService;
 
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -13,7 +11,6 @@ import com.wu.util.SpringBeanUtil;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -34,18 +31,14 @@ public class RpcServer implements DisposableBean, ApplicationContextAware ,Appli
     @Autowired
     RpcRegisterService rpcRegisterService;
 
-    @Autowired
-    RpcClient rpcClient;
 
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        System.out.println("===========最先启动===============setApplicationContext");
         SpringBeanUtil.INSTANCE.setContext((ConfigurableApplicationContext) applicationContext);
     }
 
     @Override
     public void onApplicationEvent(WebServerInitializedEvent event) {
-        System.out.println("===========第三启第===============onApplicationEvent");
          port = event.getWebServer().getPort();
         Map<String, Object> map = SpringBeanUtil.INSTANCE.getContext().getBeansWithAnnotation(RPCService.class);
         if (!CollectionUtils.isEmpty(map)) {

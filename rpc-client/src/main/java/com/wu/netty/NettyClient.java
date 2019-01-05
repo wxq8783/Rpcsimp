@@ -1,12 +1,11 @@
 package com.wu.netty;
 
-import com.alibaba.fastjson.JSON;
 import com.wu.RequestBean;
 import com.wu.ResponseBean;
 import com.wu.registrybean.RegistryAddress;
 import com.wu.service.RpcRegisterService;
+import com.wu.util.SpringBeanUtil;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -16,21 +15,19 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jboss.netty.util.internal.ConcurrentHashMap;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class NettyClient {
-    //private RequestBean requestBean;
 
-    @Autowired
-    RpcRegisterService rpcRegisterService;
 
     public ConcurrentHashMap<String,CompletableFuture> requestRPCMap = new ConcurrentHashMap<>();
 
     private RegistryAddress registryAddress;
     private String interfaceName;
+
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     public NettyClient( String interfaceName) {
         this.interfaceName = interfaceName;
@@ -38,6 +35,7 @@ public class NettyClient {
     }
 
     public void getRegistryAddress(){
+        RpcRegisterService rpcRegisterService = SpringBeanUtil.INSTANCE.getBean("rpcRegisterService");
         registryAddress = rpcRegisterService.doDiscover(interfaceName);
     }
 
@@ -65,6 +63,7 @@ public class NettyClient {
                         ChannelFuture channelFuture = (ChannelFuture) future;
                         Channel channel = channelFuture.channel();
                         NettyChannelManager.getInstance().addChannel(registryAddress.toString(),channel);
+                        countDownLatch.countDown();
                     }
                 }
             });
@@ -74,41 +73,41 @@ public class NettyClient {
     }
 
 
-    public Channel getChannel(String address){
+    public Channel getChannel(String address) throws InterruptedException {
         Channel channel = NettyChannelManager.getInstance().getChannel(address);
         if(channel == null){
             this.clientStart();
+            countDownLatch.await();
             return NettyChannelManager.getInstance().getChannel(address);
         }
-        return null;
+        return channel;
     }
 
 
     public CompletableFuture sendRequest(RequestBean requestBean) throws InterruptedException {
         String requestId = requestBean.getRequestId();
-        CompletableFuture<ResponseBean> future = new CompletableFuture<>();
+        final CompletableFuture<ResponseBean> comFuture = new CompletableFuture<>();
         Channel channel = getChannel(registryAddress.toString());
         final CountDownLatch downLatch = new CountDownLatch(1);
         if(channel == null){
             ResponseBean responseBean = new ResponseBean();
             requestBean.setRequestId(requestId);
             responseBean.setErrorMsg("channel is null");
-            future.complete(responseBean);
-            future.isDone();
+            comFuture.complete(responseBean);
+            comFuture.isDone();
         }else{
             ChannelFuture channelFuture = channel.writeAndFlush(requestBean);
-            requestRPCMap.put(requestId,future);
+            requestRPCMap.put(requestBean.getRequestId(),comFuture);
             channelFuture.sync().addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override
                 public void operationComplete(Future<? super Void> future) throws Exception {
                     if(future.isSuccess()){
                         downLatch.countDown();
-                        return;
                     }
                 }
             });
         }
         downLatch.await();
-        return future;
+        return comFuture;
     }
 }

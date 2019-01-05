@@ -1,6 +1,7 @@
 package com.wu.service;
 
 
+import com.wu.ProviderClassManager;
 import com.wu.annotation.RPCService;
 import com.wu.registrybean.RegistryAddress;
 import com.wu.util.CommonConstant;
@@ -13,7 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-@Service("rpcRegisterService")
+@Service
 public class RpcRegisterService {
 
     @Autowired
@@ -31,6 +32,7 @@ public class RpcRegisterService {
             String interfaceName = object.getClass().getAnnotation(RPCService.class).value().getName();
             String registerPath = interfaceName+CommonConstant.PATH_JOIN+host+":"+serverPort;
             zookeeperClient.createPath(registerPath);
+            ProviderClassManager.getInstance().setProviderMap(interfaceName,object);
         }
     }
 

@@ -1,11 +1,12 @@
 package com.wu.netty;
 
-import com.wu.handler.MessageDecoderHandler;
-import com.wu.handler.MessageEncoderHanlder;
+import com.wu.coder.kryo.KryoCodecUtil;
+import com.wu.coder.kryo.KryoDecoder;
+import com.wu.coder.kryo.KryoEncoder;
+import com.wu.coder.kryo.KryoPoolFactory;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 
 public class NettyClientHandlerInitializer extends ChannelInitializer<SocketChannel> {
     private NettyClient nettyClient;
@@ -17,8 +18,9 @@ public class NettyClientHandlerInitializer extends ChannelInitializer<SocketChan
     @Override
     protected void initChannel(SocketChannel socketChannel) throws Exception {
         ChannelPipeline pipeline = socketChannel.pipeline();
-        pipeline.addLast("encoder",new MessageEncoderHanlder());
-        pipeline.addLast("decoder",new MessageDecoderHandler());
+        KryoCodecUtil util = new KryoCodecUtil(KryoPoolFactory.getKryoPoolInstance());
+        pipeline.addLast(new KryoEncoder(util));
+        pipeline.addLast(new KryoDecoder(util));
         pipeline.addLast("rpcHandler",new RpcClientHandler(nettyClient));
     }
 }

@@ -1,5 +1,6 @@
 package com.wu.service;
 
+import com.wu.ProviderClassManager;
 import com.wu.RequestBean;
 import com.wu.ResponseBean;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,7 +41,9 @@ public class RpcServerHandler extends SimpleChannelInboundHandler<RequestBean> {
             ctx.writeAndFlush(responseBean);
             return;
         }
-        Object object = MethodUtils.invokeMethod(requestBean.getClassName(),
+        String beanName = requestBean.getClassName();
+        Object objectBean = ProviderClassManager.getInstance().getProviderClass(beanName);
+        Object object = MethodUtils.invokeMethod(objectBean,
                 requestBean.getMethodName(),
                 requestBean.getParameters(),
                 requestBean.getParametersType());

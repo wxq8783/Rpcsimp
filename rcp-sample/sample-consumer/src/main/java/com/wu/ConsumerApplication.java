@@ -9,10 +9,6 @@ import org.springframework.context.annotation.ComponentScan;
 public class ConsumerApplication {
 
     public static void main(String[] args) {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(ConsumerApplication.class, args);
-        String[] definitionNames = applicationContext.getBeanDefinitionNames();
-        for(String name :definitionNames){
-            System.out.println("-----"+name);
-        }
+        SpringApplication.run(ConsumerApplication.class, args);
     }
 }

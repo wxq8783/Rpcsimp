@@ -30,7 +30,6 @@ public class RpcClientService implements DisposableBean, ApplicationContextAware
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
         Field[] fields = bean.getClass().getDeclaredFields();
         if(fields != null){
             for(Field field : fields){
@@ -51,7 +50,6 @@ public class RpcClientService implements DisposableBean, ApplicationContextAware
 
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        System.out.println("-------------------");
         if(!CollectionUtils.isEmpty(referenceFieldSet)){
             Iterator<Field> iterator = referenceFieldSet.iterator();
             while(iterator.hasNext()){
