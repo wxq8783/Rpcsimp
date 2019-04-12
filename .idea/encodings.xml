@@ -4,6 +4,8 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rcp-sample" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rcp-sample/sample-consumer" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rcp-sample/sample-interface" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/rcp-sample/sample-intferace" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rcp-sample/sample-produce" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc-api" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/rpc-client" charset="UTF-8" />

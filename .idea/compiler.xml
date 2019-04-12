@@ -6,7 +6,6 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="rpc-api" />
         <module name="rpc-client" />
         <module name="rpc-common" />
         <module name="rpc-protocol" />
@@ -14,10 +13,12 @@
         <module name="rpc-server" />
         <module name="rpc-web-produce" />
         <module name="sample-consumer" />
+        <module name="sample-interface" />
         <module name="sample-produce" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="rpc-api" target="1.8" />
       <module name="rpc-web" target="1.8" />
       <module name="rpc-web-consumer" target="1.8" />
       <module name="rpc-web-produce" target="1.8" />

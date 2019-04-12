@@ -14,14 +14,10 @@
     <modules>
         <module>sample-produce</module>
         <module>sample-consumer</module>
+        <module>sample-interface</module>
     </modules>
 
     <dependencies>
-        <dependency>
-            <groupId>com.wu.rpc.simp</groupId>
-            <artifactId>rpc-api</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <dependency>
             <groupId>com.wu.rpc.simp</groupId>
             <artifactId>rpc-server</artifactId>

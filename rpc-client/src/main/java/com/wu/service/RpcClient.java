@@ -1,7 +1,5 @@
 package com.wu.service;
 
-
-import com.wu.netty.NettyClient;
 import com.wu.proxy.RPCFactoryBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -35,8 +33,6 @@ public class RpcClient implements BeanFactoryPostProcessor {
             definition.getPropertyValues().addPropertyValue("referenceClass",clazz);
             definition.setBeanClass(RPCFactoryBean.class);
             registry.registerBeanDefinition(clazz.getName(),definition);
-//            NettyClient nettyClient = new NettyClient(clazz.getName());
-//            nettyClient.clientStart();
         }
 
 

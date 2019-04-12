@@ -101,9 +101,7 @@ public class NettyClient {
             channelFuture.sync().addListener(new GenericFutureListener<Future<? super Void>>() {
                 @Override
                 public void operationComplete(Future<? super Void> future) throws Exception {
-                    if(future.isSuccess()){
-                        downLatch.countDown();
-                    }
+                    downLatch.countDown();
                 }
             });
         }

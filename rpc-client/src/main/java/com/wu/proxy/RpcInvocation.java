@@ -4,6 +4,8 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import com.wu.RequestBean;
 import com.wu.ResponseBean;
 import com.wu.netty.NettyClient;
+import org.springframework.util.StringUtils;
+
 import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -31,6 +33,9 @@ public class RpcInvocation<T> extends AbstractInvocationHandler {
         NettyClient nettyClient = new NettyClient(className);
         CompletableFuture future = nettyClient.sendRequest(requestBean);
         ResponseBean bean = (ResponseBean) future.get();
-        return bean.getResult();
+        if(bean != null && StringUtils.isEmpty(bean.getErrorMsg())){
+            return bean.getResult();
+        }
+        return bean == null ? new Exception("ResponseBean is null") : bean.getErrorMsg();
     }
 }

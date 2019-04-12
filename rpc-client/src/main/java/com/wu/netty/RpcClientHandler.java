@@ -44,7 +44,7 @@ public class RpcClientHandler extends SimpleChannelInboundHandler<ResponseBean> 
         String requestId = responseBean.getRequestId();
         CompletableFuture comFuture = nettyClient.requestRPCMap.get(requestId);
         if(comFuture != null ){
-            nettyClient.requestRPCMap.clear();
+            nettyClient.requestRPCMap.remove(requestId);
             comFuture.complete(responseBean);
         }
     }
